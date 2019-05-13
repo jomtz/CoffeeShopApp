@@ -1,0 +1,40 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.josuemartinez.weatherapp"
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "weatherapp.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+    productFlavors {
+    }
+    buildToolsVersion '28.0.3'
+}
+allprojects {
+    repositories {
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
+    }
+}
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    // COMPLETED (10) Remove this dependency as we won't be needing it for the project until later
+    // Instrumentation dependencies use androidTestCompile
+    // (as opposed to testCompile for local unit tests run in the JVM)
+    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support:support-annotations:25.1.0'
+    androidTestImplementation 'com.android.support.test:runner:0.5'
+    androidTestImplementation 'com.android.support.test:rules:0.5'
+}
