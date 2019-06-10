@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.text.NumberFormat;
 
 /**
@@ -25,53 +28,24 @@ public class MainActivity extends AppCompatActivity {
      * This method is called when the plus button is clicked.
      */
     public void increment(View view) {
+        if (quantity == 100) {
+            Toast.makeText(this, "You cannot have more than 100 coffees", Toast.LENGTH_SHORT).show();
+            return;
+        }
         quantity = quantity + 1;
         displayQuantity(quantity);
     }
+
     /**
      * This method is called when the minus button is clicked.
      */
     public void decrement(View view) {
+        if (quantity == 1) {
+            Toast.makeText(this, "You cannot have less than 1 coffee", Toast.LENGTH_SHORT).show();
+            return;
+        }
         quantity = quantity - 1;
         displayQuantity(quantity);
-    }
-
-
-    /**
-     * This method is called when the order button is clicked.
-     */
-    public void submitOrder(View view) {
-        CheckBox whippedCreamCheckBox = (CheckBox) findViewById(R.id.whipped_cream_checkbox);
-        boolean hasWhippedCream = whippedCreamCheckBox.isChecked();
-        Log.v("MainActivity", "Has whipped cream: " + hasWhippedCream);
-
-        int price = calculatePrice();
-        String priceMessage = createOrderSummary(price, hasWhippedCream);
-        displayMessage(priceMessage);
-
-    }
-
-    /**
-     * Calculates the price of the order.
-     *
-     * @return total price
-     */
-    private int calculatePrice() {
-        int price = quantity * 5;
-        return price;
-    }
-    /**
-     * Create a summary of the order.
-     *
-     * @param price of the order
-     * @return text summary
-     */
-    private String createOrderSummary(int price, boolean addWhippedCream){
-        String priceMessage = "Quantity: " + quantity;
-        priceMessage += "\nAdd whipped cream? " + addWhippedCream;
-        priceMessage += "\nTotal: $" + price;
-        priceMessage += "\nEnjoy!";
-        return priceMessage;
     }
 
     /**
@@ -83,6 +57,60 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+    /**
+     * This method is called when the order button is clicked.
+     */
+    public void submitOrder(View view) {
+        TextView nameField = (EditText) findViewById(R.id.name_field);
+        String theName = nameField.getText().toString();
+
+        CheckBox whippedCreamCheckBox = (CheckBox) findViewById(R.id.whipped_cream_checkbox);
+        boolean hasWhippedCream = whippedCreamCheckBox.isChecked();
+
+        CheckBox chocolateCheckBox = (CheckBox) findViewById(R.id.chocolate_checkbox);
+        boolean hasChocolate = chocolateCheckBox.isChecked();
+
+        int price = calculatePrice(hasWhippedCream, hasChocolate);
+        String priceMessage = createOrderSummary(theName, price, hasWhippedCream, hasChocolate);
+        displayMessage(priceMessage);
+
+    }
+
+    /**
+     * Calculates the price of the order.
+     *
+     * @return total price
+     */
+    private int calculatePrice(boolean addWhippedCream, boolean addChocolate) {
+        int basePrice = 5;
+        if(addWhippedCream){
+            basePrice += 1;
+        }
+        if (addChocolate){
+            basePrice += 2;
+        }
+        return quantity * basePrice;
+    }
+    /**
+     * Create a summary of the order.
+     *
+     * @param name of the customer
+     * @param addWhippedCream is whether or not the user wants whipped cream topping
+     * @param addChocolate is whether or not the user wants chocolate topping
+     * @param price of the order
+     * @return text summary
+     */
+    private String createOrderSummary(String name, int price, boolean addWhippedCream, boolean addChocolate){
+        String priceMessage = "Name: " + name;
+        priceMessage += "\nAdd whipped cream? " + addWhippedCream;
+        priceMessage += "\nAdd chocolate? " + addChocolate;
+        priceMessage += "\nQuantity: " + quantity;
+        priceMessage += "\nTotal: $" + price;
+        priceMessage += "\nThank you!";
+        return priceMessage;
+    }
+
     /**
      * This method displays the given text on the screen.
      */
@@ -90,4 +118,5 @@ public class MainActivity extends AppCompatActivity {
         TextView orderSummaryTextView = (TextView) findViewById(R.id.order_summary_text_view);
         orderSummaryTextView.setText(message);
     }
+
 }
